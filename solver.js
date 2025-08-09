@@ -17,6 +17,7 @@ export default class Solver {
     async startBrowser() {
         this.browser = await puppeteer.launch({
             headless: this.headless,
+            executablePath: '/usr/bin/chromium-browser',
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
