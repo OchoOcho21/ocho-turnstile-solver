@@ -1,17 +1,28 @@
-const express = require('express');
-const Solver = require('./solver');
-const app = express();
+import express from 'express';
+import Solver from './solver.js';
 
+const app = express();
 app.use(express.json());
 
 app.post('/solve', async (req, res) => {
-    const { url, sitekey, invisible } = req.body;
-    if (!url || !sitekey) return res.status(400).json({ error: 'Missing url or sitekey' });
-    const solver = new Solver();
-    const token = await solver.solve(url, sitekey, invisible || false);
-    res.json({ token });
+    try {
+        const { url, sitekey, invisible } = req.body;
+        if (!url || !sitekey) {
+            return res.status(400).json({ error: 'Missing url or sitekey' });
+        }
+        const solver = new Solver();
+        const token = await solver.solve(url, sitekey, invisible || false);
+        res.json({ success: true, token });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
-app.get('/', (req, res) => res.send('Turnstile Solver is running.'));
+app.get('/', (req, res) => {
+    res.send('Turnstile solver is running');
+});
 
-app.listen(process.env.PORT || 10000, () => console.log('Server started'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
