@@ -12,7 +12,7 @@ app.post('/solve', async (req, res) => {
         const token = await solver.solve(url, sitekey, invisible || false);
         res.json({ success: true, token });
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        res.status(500).json({ success: false, error: err.message, stack: err.stack });
     }
 });
 
