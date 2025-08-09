@@ -1,9 +1,9 @@
 {
   "name": "turnstile-solver",
   "version": "1.0.0",
-  "main": "server.js",
   "type": "module",
   "scripts": {
+    "preinstall": "apt-get update && apt-get install -y chromium",
     "start": "node server.js"
   },
   "dependencies": {
