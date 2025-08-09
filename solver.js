@@ -73,7 +73,6 @@ class Solver {
             await new Promise(r => setTimeout(r, 100));
             box = await iframe.boundingBox();
         }
-
         let x = box.x + 5 + Math.random() * 12;
         let y = box.y + 5 + Math.random() * 12;
         await this.moveTo(x, y);
@@ -85,7 +84,6 @@ class Solver {
             checkbox = await frame.$('input');
             await new Promise(r => setTimeout(r, 100));
         }
-
         const cbBox = await checkbox.boundingBox();
         x = cbBox.x + cbBox.width / 2;
         y = cbBox.y + cbBox.height / 2;
@@ -94,7 +92,6 @@ class Solver {
         this.currentY = y;
         await new Promise(r => setTimeout(r, Math.random() * 10));
         await this.page.mouse.click(x, y);
-
         for (let i = 0; i < 10; i++) {
             this.randomX = Math.floor(Math.random() * this.windowWidth);
             this.randomY = Math.floor(Math.random() * this.windowHeight);
@@ -117,7 +114,6 @@ class Solver {
         this.invisible = invisible;
         await this.startBrowser();
         await this.buildPageData();
-
         await this.page.setRequestInterception(true);
         this.page.on('request', request => {
             if (request.url() === this.url) {
@@ -126,7 +122,6 @@ class Solver {
                 request.continue();
             }
         });
-
         await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
         this.currentX = 0;
         this.currentY = 0;
