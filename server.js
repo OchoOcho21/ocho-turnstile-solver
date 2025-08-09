@@ -7,9 +7,7 @@ app.use(express.json());
 app.post('/solve', async (req, res) => {
     try {
         const { url, sitekey, invisible } = req.body;
-        if (!url || !sitekey) {
-            return res.status(400).json({ error: 'Missing url or sitekey' });
-        }
+        if (!url || !sitekey) return res.status(400).json({ error: 'Missing url or sitekey' });
         const solver = new Solver();
         const token = await solver.solve(url, sitekey, invisible || false);
         res.json({ success: true, token });
