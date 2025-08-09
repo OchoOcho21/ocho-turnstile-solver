@@ -1,9 +1,15 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const fs = require('fs');
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 puppeteer.use(StealthPlugin());
 
-class Solver {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default class Solver {
     constructor(headless = true) {
         this.headless = headless;
     }
@@ -18,30 +24,29 @@ class Solver {
     }
 
     async buildPageData() {
-        this.pageData = fs.readFileSync("utils/page.html", "utf-8");
+        this.pageData = fs.readFileSync(path.join(__dirname, 'utils', 'page.html'), 'utf-8');
         const stub = `<div class="cf-turnstile" data-sitekey="${this.sitekey}"></div>`;
         this.pageData = this.pageData.replace("<!-- cf turnstile -->", stub);
     }
 
     async getMousePath(x1, y1, x2, y2) {
-        const path = [];
+        const pathArr = [];
         let x = x1, y = y1;
         while (Math.abs(x - x2) > 3 || Math.abs(y - y2) > 3) {
             let diff = Math.abs(x - x2) + Math.abs(y - y2);
             let speed = Math.random() * (diff < 20 ? 3 : (diff / 45) * 2);
             if (Math.abs(x - x2) > 3) x += x < x2 ? speed : -speed;
             if (Math.abs(y - y2) > 3) y += y < y2 ? speed : -speed;
-            path.push([x, y]);
+            pathArr.push([x, y]);
         }
-        return path;
+        return pathArr;
     }
 
     async moveTo(x, y) {
-        const path = await this.getMousePath(this.currentX, this.currentY, x, y);
-        for (const [px, py] of path) {
+        const pathArr = await this.getMousePath(this.currentX, this.currentY, x, y);
+        for (const [px, py] of pathArr) {
             await this.page.mouse.move(px, py);
-            if (Math.random() > 0.15)
-                await new Promise(r => setTimeout(r, Math.random() * 10));
+            if (Math.random() > 0.15) await new Promise(r => setTimeout(r, Math.random() * 10));
         }
     }
 
@@ -132,5 +137,3 @@ class Solver {
         return output;
     }
 }
-
-module.exports = Solver;
