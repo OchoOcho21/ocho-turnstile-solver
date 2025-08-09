@@ -17,7 +17,13 @@ export default class Solver {
     async startBrowser() {
         this.browser = await puppeteer.launch({
             headless: this.headless,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--single-process'
+            ]
         });
         const context = await this.browser.createIncognitoBrowserContext();
         this.page = await context.newPage();
@@ -127,7 +133,7 @@ export default class Solver {
                 request.continue();
             }
         });
-        await this.page.goto(this.url, { waitUntil: 'domcontentloaded' });
+        await this.page.goto(this.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
         this.currentX = 0;
         this.currentY = 0;
         this.windowWidth = await this.page.evaluate(() => window.innerWidth);
