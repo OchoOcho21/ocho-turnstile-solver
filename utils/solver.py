@@ -1,7 +1,18 @@
 import asyncio
 import random
-import pyppeteer
 import time
+import sys
+import subprocess
+import importlib
+
+try:
+    import pyppeteer
+    from pyppeteer import launch
+except ImportError:
+    print("Pyppeteer not installed. Installing now...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "pyppeteer"])
+    import pyppeteer
+    from pyppeteer import launch
 
 class Solver:
     def __init__(self, proxy="", headless=True):
