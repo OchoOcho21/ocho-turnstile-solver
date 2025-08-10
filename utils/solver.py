@@ -1,5 +1,6 @@
 import asyncio
 import random
+import pyppeteer
 import time
 
 class Solver:
